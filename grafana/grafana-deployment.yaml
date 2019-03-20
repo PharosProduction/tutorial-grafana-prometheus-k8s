@@ -1,0 +1,54 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: grafana
+  template:
+    metadata:
+      labels:
+        component: grafana
+    spec:
+      volumes:
+      - name: grafana-claim
+        persistentVolumeClaim:
+          claimName: grafana-claim
+      containers:
+      - name: grafana
+        image: pharosproduction/grafana:6
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2500Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - wget 
+        #       - localhost:3000
+        #       - --spider
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 30
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #       - wget 
+        #       - localhost:3000
+        #       - --spider
+          # initialDelaySeconds: 120
+          # periodSeconds: 5
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-claim
+ 

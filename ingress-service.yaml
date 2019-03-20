@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata: 
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    prometheus.io/scrape: 'true'
+    prometheus.io/path:   /metrics
+    prometheus.io/port:   '80'
+spec:
+  rules:
+    - host: grafana.local
+      http:
+        paths: 
+          - backend: 
+              serviceName: grafana-ip-service
+              servicePort: 3000
+
+    - host: prometheus.local
+      http:
+        paths: 
+          - backend: 
+              serviceName: prometheus-ip-service
+              servicePort: 9090
+
